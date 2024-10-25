@@ -5,7 +5,7 @@ const Todo = () => {
   const [task, setTask] = useState('');
   const [tasks, setTasks] = useState([]);
   const [selectedDate, setSelectedDate] = useState('');
-
+  const [taskList,settaskList] = useState([])
 
   useEffect(() => {
     const fetchTasks = async () => {
@@ -18,7 +18,7 @@ const Todo = () => {
     };
 
     fetchTasks();
-  }, []);
+  }, [taskList]);
 
   const handleSubmit = async () => {
     if (task.trim() === '') {
@@ -32,7 +32,7 @@ const Todo = () => {
         date: selectedDate || new Date().toISOString().split('T')[0],
         completed: false,
       };
-
+      taskList.push(task)
       const response = await axios.post('http://127.0.0.1:8000/todo/create/', newTask);
       setTasks([...tasks, response.data]); 
       setTask('');
