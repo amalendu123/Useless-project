@@ -5,6 +5,7 @@ import { GiStopwatch } from "react-icons/gi";
 import { MdNewspaper } from "react-icons/md";
 import { usePathname } from 'next/navigation';
 import { useRouter } from 'next/navigation';
+import { LuCalendarDays } from "react-icons/lu";
 
 const Navigation = () => {
   const pathname = usePathname();
@@ -46,6 +47,16 @@ const Navigation = () => {
           <MdNewspaper 
             size={50}
             color={pathname === '/news' ? '#EF4444' : 'white'}
+          />
+        </Link>
+        <Link 
+          href="/Calender" 
+          onClick={handleNavigation('/Calender')}
+          className="p-2 rounded-full hover:bg-gray-700 transition-colors"
+        >
+          <LuCalendarDays
+            size={50}
+            color={pathname === '/Calender' ? '#EF4444' : 'white'}
           />
         </Link>
       </div>

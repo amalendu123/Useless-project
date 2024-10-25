@@ -57,7 +57,7 @@ const Pomodoro = () => {
   return (
     <div className="flex min-h-screen items-center justify-center bg-black">
       <div className="bg-white p-8 rounded-lg shadow-lg text-center">
-        <h1 className="text-3xl font-bold mb-8">
+        <h1 className="text-3xl font-bold mb-8 text-black">
           {mode === 'work' ? 'Work Time' : 'Break Time'}
         </h1>
         
