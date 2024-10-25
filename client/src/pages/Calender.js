@@ -1,5 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ChevronLeft, ChevronRight, Plus, X } from 'lucide-react';
+import axios from 'axios';
+
+const API_BASE_URL = 'http://127.0.0.1:8000/calender';
 
 const Calendar = () => {
   const [currentDate, setCurrentDate] = useState(new Date());
@@ -7,8 +10,40 @@ const Calendar = () => {
   const [showEventForm, setShowEventForm] = useState(false);
   const [eventTitle, setEventTitle] = useState('');
   const [events, setEvents] = useState({});
+  const [loading, setLoading] = useState(false);
 
-  // Get calendar details
+  // Fetch events for the current month
+  useEffect(() => {
+    fetchEvents();
+  }, [currentDate]);
+
+  const fetchEvents = async () => {
+    try {
+      setLoading(true);
+      const response = await axios.get(`${API_BASE_URL}/events/`, {
+        params: {
+          month: currentDate.getMonth() + 1,
+          year: currentDate.getFullYear()
+        }
+      });
+
+      const eventsByDate = response.data.reduce((acc, event) => {
+        const date = event.date;
+        if (!acc[date]) {
+          acc[date] = [];
+        }
+        acc[date].push({ id: event.id, title: event.title });
+        return acc;
+      }, {});
+
+      setEvents(eventsByDate);
+    } catch (error) {
+      console.error('Error fetching events:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const daysInMonth = new Date(
     currentDate.getFullYear(),
     currentDate.getMonth() + 1,
@@ -21,7 +56,6 @@ const Calendar = () => {
     1
   ).getDay();
 
-  // Generate calendar days
   const days = [];
   for (let i = 0; i < firstDayOfMonth; i++) {
     days.push(null);
@@ -30,7 +64,6 @@ const Calendar = () => {
     days.push(i);
   }
 
-  // Navigate months
   const previousMonth = () => {
     setCurrentDate(new Date(currentDate.setMonth(currentDate.getMonth() - 1)));
   };
@@ -39,35 +72,58 @@ const Calendar = () => {
     setCurrentDate(new Date(currentDate.setMonth(currentDate.getMonth() + 1)));
   };
 
-  // Handle date selection and event addition
+  // Event handling
   const handleDateClick = (day) => {
     if (day) {
-      const dateStr = `${currentDate.getFullYear()}-${String(currentDate.getMonth() + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+      const dateStr = formatDateForAPI(currentDate, day);
       setSelectedDate(dateStr);
       setShowEventForm(true);
     }
   };
 
-  const handleAddEvent = (e) => {
+  const handleAddEvent = async (e) => {
     e.preventDefault();
     if (eventTitle && selectedDate) {
-      setEvents(prev => ({
-        ...prev,
-        [selectedDate]: [...(prev[selectedDate] || []), eventTitle]
-      }));
-      setEventTitle('');
-      setShowEventForm(false);
+      try {
+        const response = await axios.post(`${API_BASE_URL}/events/`, {
+          title: eventTitle,
+          date: selectedDate
+        });
+
+        
+        setEvents(prev => ({
+          ...prev,
+          [selectedDate]: [...(prev[selectedDate] || []), { 
+            id: response.data.id,
+            title: response.data.title 
+          }]
+        }));
+
+        setEventTitle('');
+        setShowEventForm(false);
+      } catch (error) {
+        console.error('Error adding event:', error);
+      }
     }
   };
 
-  const handleRemoveEvent = (date, index) => {
-    setEvents(prev => ({
-      ...prev,
-      [date]: prev[date].filter((_, i) => i !== index)
-    }));
+  const handleRemoveEvent = async (date, eventId) => {
+    try {
+      await axios.delete(`${API_BASE_URL}/events/${eventId}/`);
+      setEvents(prev => ({
+        ...prev,
+        [date]: prev[date].filter(event => event.id !== eventId)
+      }));
+    } catch (error) {
+      console.error('Error removing event:', error);
+    }
   };
 
-  // Format date for display
+  
+  const formatDateForAPI = (date, day) => {
+    return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+  };
+
   const formatDate = (date) => {
     return new Date(date).toLocaleDateString('en-US', {
       year: 'numeric',
@@ -82,8 +138,7 @@ const Calendar = () => {
   ];
 
   return (
-    <div className="max-w-4xl mx-auto p-10">
-    
+    <div className="max-w-4xl mx-auto p-6">
       <div className="flex items-center justify-between mb-8">
         <button 
           onClick={previousMonth}
@@ -101,6 +156,9 @@ const Calendar = () => {
           <ChevronRight className="w-6 h-6" />
         </button>
       </div>
+      {loading && (
+        <div className="text-center py-4">Loading events...</div>
+      )}
 
      
       <div className="grid grid-cols-7 gap-2">
@@ -110,9 +168,7 @@ const Calendar = () => {
           </div>
         ))}
         {days.map((day, index) => {
-          const dateStr = day ? 
-            `${currentDate.getFullYear()}-${String(currentDate.getMonth() + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}` : 
-            null;
+          const dateStr = day ? formatDateForAPI(currentDate, day) : null;
           const hasEvents = dateStr && events[dateStr]?.length > 0;
           
           return (
@@ -128,7 +184,7 @@ const Calendar = () => {
               {day && (
                 <>
                   <div className="flex justify-between items-start">
-                    <span className={`text-sm ${hasEvents ? 'font-semibold ' : ''}`}>
+                    <span className={`text-sm ${hasEvents ? 'font-semibold' : ''}`}>
                       {day}
                     </span>
                     {hasEvents && (
@@ -136,16 +192,16 @@ const Calendar = () => {
                     )}
                   </div>
                   <div className="mt-1">
-                    {events[dateStr]?.map((event, i) => (
+                    {events[dateStr]?.map((event) => (
                       <div 
-                        key={i}
+                        key={event.id}
                         className="text-xs bg-blue-100 rounded p-1 mb-1 flex justify-between items-center"
                       >
-                        <span className="truncate text-black">{event}</span>
+                        <span className="truncate text-black">{event.title}</span>
                         <button 
                           onClick={(e) => {
                             e.stopPropagation();
-                            handleRemoveEvent(dateStr, i);
+                            handleRemoveEvent(dateStr, event.id);
                           }}
                           className="ml-1 text-gray-500 hover:text-gray-700"
                         >
@@ -161,7 +217,7 @@ const Calendar = () => {
         })}
       </div>
 
-      {/* Event Form Modal */}
+    
       {showEventForm && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
           <div className="bg-white p-6 rounded-lg w-96">
