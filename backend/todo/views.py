@@ -19,16 +19,16 @@ def setup_gemini(key1):
     }
     
     model = genai.GenerativeModel(
-        model_name='gemini-1.5-pro',
+        model_name='gemini-1.5-flash',
         generation_config=generation_config,
-        system_instruction="You're a helpful assistant who takes to do list inputs"
+        system_instruction="You're a helpful assistant who takes in to do list inputs"
     )
     
     return model
 
 def check_productivity(text, model):
     """Check if a todo item is productive and get response if needed."""
-    analysis_prompt = f"""Task: Classify the following prompt as either productive or unproductive.
+    analysis_prompt = f"""Task: Classify the following prompt as either productive/useful/mindful/kind or none of the before.
                          Prompt (the prompt is provided as it is given in a todo list): {text}
                          Rules:
                          - Respond with exactly one word: 'productive' or 'unproductive'
@@ -41,7 +41,7 @@ def check_productivity(text, model):
         is_productive = response.text.strip().lower() == 'productive'
         
         if is_productive:
-            result_prompt = """Give me an interesting  unproductive phrase not exceeding 10 words"""
+            result_prompt = f"""Give me an unproductive phrase that counteracts the following to do phrase:{text} (Generated phrase should be approximately similar in length,phrase must not be in quotes, and tiny bit passively aggressive)"""
             result_response = model.generate_content(result_prompt)
             return is_productive, result_response.text
         
