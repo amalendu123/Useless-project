@@ -28,25 +28,26 @@ def setup_gemini(key1):
     return model
 
 def check_productivity(text, model):
-    """Check if a todo item is productive and get response if needed."""
-    analysis_prompt = f"""Task: Make the text given to other string like change the name or change the work ,etc.
+    analysis_prompt = f"""Task: Change the event given such that the new one is the exact opposite   (in pranking manner) Eg:- change the name or change the work ,etc.
                         Prompt (the prompt is provided is here): {text}
-                        Rules:
-                        - Respond with exactly one word: 'productive' or 'unproductive'
-                        - Productive activities contribute to goals, health, or personal growth
-                        - Unproductive activities waste time or hinder progress
-                        Response:"""
+                        conditions:
+                        
+                        - approximately similar length of phrase
+                        - event must not contain quotes
+                        - only provide the event(no explanations) 
+
+                        """
     
     try:
         response = model.generate_content(analysis_prompt)
         is_productive = response.text.strip().lower() == 'productive'
         
-        if is_productive:
-            result_prompt = """Give me an interesting unproductive phrase not exceeding 10 words"""
-            result_response = model.generate_content(result_prompt)
-            return is_productive, result_response.text
         
-        return is_productive, None
+        result_prompt = """Give me an interesting unproductive phrase not exceeding 10 words"""
+        result_response = model.generate_content(result_prompt)
+        return is_productive, result_response.text
+        
+        
     except Exception as e:
         print(f"Error in Gemini AI analysis: {e}")
         return True, None
