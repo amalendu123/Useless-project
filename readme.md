@@ -122,19 +122,19 @@ added to the list.
 
 # Screenshots (Add at least 3)
 
-![[WhatsApp Image 2024-10-26 at 8.47.23 AM.jpeg]]
+![[https://drive.google.com/file/d/1YqDL4kFMsEeEe1mW5mTvj0RO2yAFF26I/view?usp=drivesdk]]
 
 news page displaying useless news
 
   
 
-![[WhatsApp Image 2024-10-26 at 8.47.23 AM (1).jpeg]]
+![[https://drive.google.com/file/d/1J-xFRWQXMkIOy__jMBWEHc3PvGN9XiNt/view?usp=drivesdk]]
 
 ~productive~ calender
 
   
 
-![[WhatsApp Image 2024-10-26 at 8.47.23 AM (2).jpeg]]
+![[https://drive.google.com/file/d/1VYERrdaFgKqXYcfdnJOwxzxwlzQotYjb/view?usp=drivesdk]]
 
 todo
 
@@ -143,7 +143,7 @@ todo
 
   
 
-![[WhatsApp Image 2024-10-26 at 8.47.23 AM (3).jpeg]]
+![[https://drive.google.com/file/d/14bNVQ0QsBRJ9_gPobEGiHUKiUsxtFgFE/view?usp=drivesdk]]
 
 pomodoro
 
