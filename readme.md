@@ -63,7 +63,7 @@ For Software:
 
 # Installation
 
-`git clone `
+`git clone https://github.com/amalendu123/Useless-project.git`
 
   
 
