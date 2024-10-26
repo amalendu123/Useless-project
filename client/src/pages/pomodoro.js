@@ -167,7 +167,7 @@ const Pomodoro = () => {
   };
 
   return (
-    <div className="flex min-h-screen bg-black">
+    <div className="flex min-h-screen bg-black mb-20">
       <div className="flex-1 flex items-center justify-center">
         <div className="bg-white p-8 rounded-lg shadow-lg text-center">
           <h1 className="text-3xl font-bold mb-8 text-black">

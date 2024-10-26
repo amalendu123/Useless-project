@@ -17,7 +17,7 @@ const Navigation = () => {
   };
 
   return (
-    <div className="fixed bottom-0 left-0 right-0  border-t border-gray-200 py-2">
+    <div className="fixed bottom-0 left-0 right-0  border-t border-gray-200 py-2 bg-black z-50">
       <div className="w-full flex justify-center items-center gap-10">
         <Link 
           href="/" 

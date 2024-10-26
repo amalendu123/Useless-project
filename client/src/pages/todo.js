@@ -65,7 +65,7 @@ const Todo = () => {
   }, {});
 
   return (
-    <div className="h-screen w-screen flex flex-col items-center p-8">
+    <div className="h-screen w-screen flex flex-col items-center p-8 mb-20">
       <div className="mb-8 flex flex-col sm:flex-row gap-4">
         <input
           type="text"

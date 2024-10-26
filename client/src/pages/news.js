@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
 const News = () => {
-  const [news, setNews] = useState([]);
+  const [newsData, setNewsData] = useState({ data: [] });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [generating, setGenerating] = useState(false);
@@ -11,8 +11,8 @@ const News = () => {
   const fetchNews = async () => {
     try {
       setLoading(true);
-      const response = await axios.get('http://127.0.0.1:8000/news/');
-      setNews(response.data);
+      const response = await axios.post('http://127.0.0.1:8000/news/generate/');
+      setNewsData(response.data);
       setError(null);
     } catch (err) {
       setError('Failed to fetch news');
@@ -29,7 +29,7 @@ const News = () => {
       const response = await axios.post('http://127.0.0.1:8000/news/generate/', {
         number_of_news: 10
       });
-      fetchNews(); // Refresh the news list after generating
+      setNewsData(response.data);
       setError(null);
     } catch (err) {
       setError('Failed to generate news');
@@ -45,11 +45,11 @@ const News = () => {
   }, []);
 
   return (
-    <div className="flex flex-col w-screen text-center">
-      <h1 className="mt-10 text-5xl">Latest News</h1>
+    <div className="flex flex-col w-full max-w-7xl mx-auto px-4 mb-20">
+      <h1 className="mt-10 text-5xl text-center">Latest News</h1>
       
       {/* Generate News Button */}
-      <div className="mt-6 mb-8">
+      <div className="mt-6 mb-8 text-center">
         <button
           onClick={generateNews}
           disabled={generating}
@@ -74,7 +74,7 @@ const News = () => {
       ) : (
         /* News Grid */
         <div className="grid grid-cols-1 gap-8 p-6 md:grid-cols-2 lg:grid-cols-3">
-          {news.map((item) => (
+          {newsData.data && newsData.data.map((item) => (
             <div
               key={item.id}
               className="overflow-hidden bg-white rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300"
@@ -109,8 +109,8 @@ const News = () => {
       )}
 
       {/* Empty State */}
-      {!loading && news.length === 0 && (
-        <div className="mt-10 text-gray-500">
+      {!loading && (!newsData.data || newsData.data.length === 0) && (
+        <div className="mt-10 text-center text-gray-500">
           No news articles available. Generate some news to get started!
         </div>
       )}
