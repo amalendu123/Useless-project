@@ -11,7 +11,7 @@ const News = () => {
   const fetchNews = async () => {
     try {
       setLoading(true);
-      const response = await axios.post('http://127.0.0.1:8000/news/generate/');
+      const response = await axios.post('https://useless-project-klib.onrender.com/news/generate/');
       setNewsData(response.data);
       setError(null);
     } catch (err) {
@@ -26,7 +26,7 @@ const News = () => {
   const generateNews = async () => {
     try {
       setGenerating(true);
-      const response = await axios.post('http://127.0.0.1:8000/news/generate/', {
+      const response = await axios.post('https://useless-project-klib.onrender.com/news/generate/', {
         number_of_news: 10
       });
       setNewsData(response.data);

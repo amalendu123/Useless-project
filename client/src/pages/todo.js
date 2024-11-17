@@ -9,7 +9,7 @@ const Todo = () => {
   useEffect(() => {
     const fetchTasks = async () => {
       try {
-        const response = await axios.get('http://127.0.0.1:8000/todo/');
+        const response = await axios.get('https://useless-project-klib.onrender.com/todo/');
         setTasks(response.data.todos || []);
       } catch (error) {
         console.error('Error fetching tasks:', error);
@@ -32,7 +32,7 @@ const Todo = () => {
         completed: false,
       };
 
-      const response = await axios.post('http://127.0.0.1:8000/todo/create/', newTask);
+      const response = await axios.post('https://useless-project-klib.onrender.com/todo/create/', newTask);
       setTasks([...tasks, newTask]); 
       setTask('');
       setSelectedDate('');
@@ -43,7 +43,7 @@ const Todo = () => {
 
   const handleDelete = async (taskId) => {
     try {
-      await axios.delete(`http://127.0.0.1:8000/todo/delete/${taskId}/`);
+      await axios.delete(`https://useless-project-klib.onrender.com/todo/delete/${taskId}/`);
       setTasks(tasks.filter((t) => t.id !== taskId));  
     } catch (error) {
       console.error('Error deleting task:', error);
